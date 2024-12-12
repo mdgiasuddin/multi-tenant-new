@@ -59,13 +59,13 @@ public class MultitenantConfig {
             }
         }
 
-        AbstractRoutingDataSource dataSource = new MultitenantDataSource();
-        dataSource.setDefaultTargetDataSource(resolvedDataSources.get(defaultTenant));
-        dataSource.setTargetDataSources(resolvedDataSources);
+        AbstractRoutingDataSource multitenantDataSource = new MultitenantDataSource();
+        multitenantDataSource.setDefaultTargetDataSource(resolvedDataSources.get(defaultTenant));
+        multitenantDataSource.setTargetDataSources(resolvedDataSources);
 
-        dataSource.afterPropertiesSet();
+        multitenantDataSource.afterPropertiesSet();
 
-        return dataSource;
+        return multitenantDataSource;
     }
 
     private void migrateFlyway(DataSource dataSource) {
