@@ -22,7 +22,7 @@ import static java.lang.Boolean.TRUE;
 
 @Configuration
 @Slf4j
-public class MultitenantConfiguration {
+public class MultitenantConfig {
 
     @Value("${tenant.default}")
     private String defaultTenant;
