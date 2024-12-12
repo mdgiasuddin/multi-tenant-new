@@ -23,6 +23,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Collections;
 
+import static org.example.multitenant.constant.AppConstant.LOGIN_URI;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -65,15 +67,10 @@ public class WebSecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> corsConfigurationSource())
-                .authorizeHttpRequests(
-                        auth -> auth.requestMatchers(
-                                        "/api/auth/login"
-                                )
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated()
-                )
-                .sessionManagement(
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers(LOGIN_URI).permitAll()
+                                .anyRequest().authenticated()
+                ).sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
