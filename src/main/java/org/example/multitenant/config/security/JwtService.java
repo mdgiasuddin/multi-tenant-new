@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.example.multitenant.config.datasource.TenantContext;
 import org.example.multitenant.model.dto.JwtClaim;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -39,25 +39,12 @@ public class JwtService {
         return new JwtClaim(username, tenantName);
     }
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-
-    public String generateAccessToken(String username, String tenantName) {
-        return generateAccessToken(new HashMap<>(), username, tenantName);
-    }
-
-    public String generateAccessToken(Map<String, Object> extraClaims, String username, String tenantName) {
+    public String generateAccessToken(String username) {
         return Jwts
                 .builder()
-                .setClaims(extraClaims)
+                .setClaims(new HashMap<>())
                 .setSubject(username)
-                .setAudience(tenantName)
+                .setAudience(TenantContext.getCurrentTenant())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + (jwtExpiration * 60 * 1000)))
                 .signWith(createSignKey(), SignatureAlgorithm.HS256)

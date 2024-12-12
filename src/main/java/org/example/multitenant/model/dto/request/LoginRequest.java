@@ -6,8 +6,6 @@ public record LoginRequest(
         @NotBlank
         String username,
         @NotBlank
-        String password,
-        @NotBlank
-        String tenantName
+        String password
 ) {
 }

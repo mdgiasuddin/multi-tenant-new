@@ -9,4 +9,5 @@ public class AppConstant {
 
     public static final String LOGIN_URI = "/api/auth/login";
     public static final String BEARER = "Bearer ";
+    public static final String X_TENANT_NAME = "X-Tenant-Name";
 }

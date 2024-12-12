@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import static org.example.multitenant.constant.AppConstant.BEARER;
 import static org.example.multitenant.constant.AppConstant.LOGIN_URI;
+import static org.example.multitenant.constant.AppConstant.X_TENANT_NAME;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Service
@@ -37,10 +38,16 @@ public class AppAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
-        final String authHeader = request.getHeader(AUTHORIZATION);
         log.info("API path: {}", requestURI);
 
-        if (requestURI.equals(LOGIN_URI) || authHeader == null || !authHeader.startsWith(BEARER)) {
+        if (requestURI.equals(LOGIN_URI)) {
+            TenantContext.setCurrentTenant(request.getHeader(X_TENANT_NAME));
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        final String authHeader = request.getHeader(AUTHORIZATION);
+        if (authHeader == null || !authHeader.startsWith(BEARER)) {
             filterChain.doFilter(request, response);
             return;
         }
