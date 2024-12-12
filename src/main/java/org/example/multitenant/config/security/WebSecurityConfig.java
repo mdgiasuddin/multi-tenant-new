@@ -70,7 +70,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(LOGIN_URI).permitAll()
                                 .anyRequest().authenticated()
-                ).sessionManagement(
+                )
+                .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
