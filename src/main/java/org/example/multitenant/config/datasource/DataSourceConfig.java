@@ -3,7 +3,6 @@ package org.example.multitenant.config.datasource;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +30,6 @@ public class DataSourceConfig {
     private String propertiesLocation;
 
     @Bean
-    @ConfigurationProperties(prefix = "tenants")
     public DataSource dataSource() {
         File[] files = Paths.get(propertiesLocation).toFile().listFiles();
         Map<Object, Object> resolvedDataSources = new HashMap<>();
