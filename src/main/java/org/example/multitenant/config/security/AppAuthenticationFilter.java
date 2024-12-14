@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.multitenant.config.datasource.TenantContext;
 import org.example.multitenant.model.dto.JwtClaim;
+import org.example.multitenant.service.LogUtil;
 import org.example.multitenant.service.UserService;
+import org.slf4j.MDC;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,10 +40,14 @@ public class AppAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
+        MDC.put("traceId", LogUtil.getTraceId());
         log.info("API path: {}", requestURI);
 
         if (requestURI.equals(LOGIN_URI)) {
-            TenantContext.setCurrentTenant(request.getHeader(X_TENANT_NAME));
+            String tenantName = request.getHeader(X_TENANT_NAME);
+            ;
+            TenantContext.setCurrentTenant(tenantName);
+            MDC.put("tenantName", tenantName);
             filterChain.doFilter(request, response);
             return;
         }
@@ -55,6 +61,7 @@ public class AppAuthenticationFilter extends OncePerRequestFilter {
         final String accessToken = authHeader.substring(BEARER.length());
         JwtClaim claim = jwtService.extractUserDetails(accessToken);
         TenantContext.setCurrentTenant(claim.tenantName());
+        MDC.put("tenantName", claim.tenantName());
         UserDetails userDetails = userService.getUserByUsername(claim.username());
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

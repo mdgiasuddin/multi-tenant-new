@@ -18,6 +18,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
 
     public LoginResponse login(LoginRequest request) {
+        log.info("Login request: {}", request);
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username(), request.password())
         );

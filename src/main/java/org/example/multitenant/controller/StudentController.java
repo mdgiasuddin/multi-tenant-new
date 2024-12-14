@@ -2,6 +2,7 @@ package org.example.multitenant.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.multitenant.model.entity.Student;
 import org.example.multitenant.repository.StudentRepository;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/students")
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class StudentController {
 
     @GetMapping
     public List<Student> getAllStudents() {
+        log.info("Get all students");
         return studentRepository.findAll();
     }
 
