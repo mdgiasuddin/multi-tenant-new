@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
@@ -40,7 +39,7 @@ public class DataSourceConfig {
             try (FileInputStream fileInputStream = new FileInputStream(propertyFile)) {
                 Properties tenantProperties = new Properties();
                 tenantProperties.load(fileInputStream);
-                String tenantId = tenantProperties.getProperty("name");
+                String tenantId = tenantProperties.getProperty("tenant-name");
 
                 HikariDataSource dataSource = new HikariDataSource();
                 dataSource.setDriverClassName(tenantProperties.getProperty("datasource.driver-class-name"));
