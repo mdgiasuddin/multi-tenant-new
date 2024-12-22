@@ -1,5 +1,6 @@
 package org.example.multitenant.config.datasource;
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,19 +37,17 @@ public class DataSourceConfig {
 
         assert files != null;
         for (File propertyFile : files) {
-            Properties tenantProperties = new Properties();
-            DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
-
             try (FileInputStream fileInputStream = new FileInputStream(propertyFile)) {
-
+                Properties tenantProperties = new Properties();
                 tenantProperties.load(fileInputStream);
                 String tenantId = tenantProperties.getProperty("name");
 
-                dataSourceBuilder.driverClassName(tenantProperties.getProperty("datasource.driver-class-name"));
-                dataSourceBuilder.username(tenantProperties.getProperty("datasource.username"));
-                dataSourceBuilder.password(tenantProperties.getProperty("datasource.password"));
-                dataSourceBuilder.url(tenantProperties.getProperty("datasource.url"));
-                DataSource dataSource = dataSourceBuilder.build();
+                HikariDataSource dataSource = new HikariDataSource();
+                dataSource.setDriverClassName(tenantProperties.getProperty("datasource.driver-class-name"));
+                dataSource.setUsername(tenantProperties.getProperty("datasource.username"));
+                dataSource.setPassword(tenantProperties.getProperty("datasource.password"));
+                dataSource.setJdbcUrl(tenantProperties.getProperty("datasource.url"));
+                dataSource.setSchema(tenantProperties.getProperty("datasource.schema-name"));
                 resolvedDataSources.put(tenantId, dataSource);
 
                 migrateFlyway(dataSource);
